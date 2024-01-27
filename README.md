@@ -1,6 +1,26 @@
 # Balancing_Robot
 
+## Description
+Self balancing robot with two wheels. Scope of functionality depends on sensors and is still work in progress.
 
+
+## Materials
+- ESP-32 DevKit
+- OR Arduino DevKit 
+- OR Raspberry without custom board
+- Later on custom board with chosen Microprocessor (for example ATMEGA 328 with CH340 USB-to-Uart)
+- Accelerometer / Gyroscope / Magnetometer BNO085
+- OR Accelerometer / Gyroscope MPU6050
+- VL53L0X Time-of-Flight (TOF) Laser distance sensor
+- HC-SR04 Ultrasound Module
+- MAX7219 8x8 1 Dot Matrix MCU LED Display Module
+- USB-C PD with Battery
+- MT3608 DC-DC power supply adapter step up module
+    - Input voltage: 2V - 24V
+    - Output voltage: 3V - 28V
+- OR M2596S Step-down DC-DC Buck Converter
+    -  Input voltage: 4-40V
+    -  Output voltage: 3.3-24V
 
 ## Getting started
 
