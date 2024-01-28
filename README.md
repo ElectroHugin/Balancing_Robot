@@ -26,6 +26,7 @@ Self balancing robot with two wheels. Scope of functionality depends on sensors 
 - OR M2596S Step-down DC-DC Buck Converter
     -  Input voltage: 4-40V
     -  Output voltage: 3.3-24V
+- JGB37-520 DC-Getriebemotor 6V/12V Hall-Encoder-Motor 65mm Reifen
 
 ## Getting started
 
