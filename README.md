@@ -14,6 +14,11 @@ Self balancing robot with two wheels. Scope of functionality depends on sensors 
 - VL53L0X Time-of-Flight (TOF) Laser distance sensor
 - HC-SR04 Ultrasound Module
 - MAX7219 8x8 1 Dot Matrix MCU LED Display Module
+- BMP180 Barometric Air Pressure and Temperature Sensor
+- DHT22 Temperature Sensor and Humidity Sensor
+- Photo LDR Resistor Diodes
+- MH-Z19B Co2-Sensor
+- L298N H-Bridge Motor Driver
 - USB-C PD with Battery
 - MT3608 DC-DC power supply adapter step up module
     - Input voltage: 2V - 24V
@@ -21,6 +26,7 @@ Self balancing robot with two wheels. Scope of functionality depends on sensors 
 - OR M2596S Step-down DC-DC Buck Converter
     -  Input voltage: 4-40V
     -  Output voltage: 3.3-24V
+- JGB37-520 DC-Getriebemotor 6V/12V Hall-Encoder-Motor 65mm Reifen
 
 ## Getting started
 
