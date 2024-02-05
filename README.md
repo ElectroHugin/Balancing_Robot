@@ -5,10 +5,9 @@ Self balancing robot with two wheels. Scope of functionality depends on sensors 
 
 
 ## Materials
-- ESP-32 DevKit
-- OR Arduino DevKit 
-- OR Raspberry without custom board
-- Later on custom board with chosen Microprocessor (for example ATMEGA 328 with CH340 USB-to-Uart)
+- ESP32 Dev Kit C V4 mit CP2102
+- Later on custom board with ESP32
+- SiliconLabs Uart-to-USB CP2102
 - Accelerometer / Gyroscope / Magnetometer BNO085
 - OR Accelerometer / Gyroscope MPU6050
 - VL53L0X Time-of-Flight (TOF) Laser distance sensor
