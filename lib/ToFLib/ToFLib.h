@@ -3,6 +3,8 @@
 
 // Include any necessary headers here
 #include "Adafruit_VL53L0X.h"
+#include <Adafruit_Sensor.h>
+#include <Wire.h>
 
 /* global objects */
 extern Adafruit_VL53L0X tof_sensor;
