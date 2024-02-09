@@ -27,7 +27,7 @@ void ToF_Setup() {
  * @return uint16_t The range in millimeters, or -1 if the measurement is out of range.
  */
 uint16_t ToF_GetRangeMilliMeter() {
-    Serial.print("Reading a measurement... ");
+    //Serial.print("Reading a measurement... ");
     tof_sensor.rangingTest(&measurement, false); // pass in 'true' to get debug data printout!
 
     if (measurement.RangeStatus != 4) {  // phase failures have incorrect data

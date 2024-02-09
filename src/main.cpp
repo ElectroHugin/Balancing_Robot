@@ -1,9 +1,9 @@
 #include <Arduino.h>
 #include <Wire.h>
 #include "ToFLib.h"
-#include "MPU6050Lib.h"
+#include "MPU6050EH.h"
 
-MPU6050 mpu;
+MPU6050EH mpuEH;
 
 u_int16_t tof_distance;
 u_long imu_timestamp;
@@ -11,43 +11,47 @@ u_long imu_timestamp;
 void setup() {
   Serial.begin(115200);
 
-    while (! Serial) {
+    while (!Serial) {
         delay(1);
     }
 
     ToF_Setup();
-    mpu.init(MPU6050_RANGE_8_G, MPU6050_RANGE_250_DEG, MPU6050_BAND_5_HZ);
+    if(mpuEH.init()) {
+      Serial.println("MPU6050 Found!");
+    } else {
+      Serial.println("Failed to find MPU6050 chip");
+    }
 }
 
 void loop() {
   imu_timestamp = micros();
-  float accelX, accelY, accelZ, gyroX, gyroY, gyroZ, temp;
+  float accelX, accelY, accelZ, yaw, pitch, roll, temp;
   tof_distance = ToF_GetRangeMilliMeter();
-  mpu.getData(accelX, accelY, accelZ, gyroX, gyroY, gyroZ, temp);
-  
+  mpuEH.accelgyroData();
+  /*
   Serial.print("ToF distance: ");
   Serial.println(tof_distance);
 
   Serial.print("Accel X: ");
-  Serial.println(accelX);
+  Serial.println(mpuEH.getAccelX());
 
   Serial.print("Accel Y: ");
-  Serial.println(accelY);
+  Serial.println(mpuEH.getAccelY());
 
   Serial.print("Accel Z: ");
-  Serial.println(accelZ);
+  Serial.println(mpuEH.getAccelZ());
 
-  Serial.print("Gyro X: ");
-  Serial.println(gyroX);
+  Serial.print("Yaw: ");
+  Serial.println(mpuEH.yaw());
 
-  Serial.print("Gyro Y: ");
-  Serial.println(gyroY);
+  Serial.print("Pitch: ");
+  Serial.println(mpuEH.pitch());
 
-  Serial.print("Gyro Z: ");
-  Serial.println(gyroZ);
+  Serial.print("Roll: ");
+  Serial.println(mpuEH.roll());
 
   Serial.print("Temperature: ");
-  Serial.println(temp);
-
+  Serial.println(mpuEH.getTemp());
+  */
   delay(500);
 }
