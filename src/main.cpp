@@ -2,11 +2,13 @@
 #include <Wire.h>
 #include "ToFLib.h"
 #include "MPU6050EH.h"
+#include "DriveLib.h"
 
-#define DELAY 1000
+#define DELAY 10
 
 MPU6050EH mpuEH;
 VL53L0XEH tofEH;
+JGA25_371 motor_1;
 
 u_int16_t tof_distance;
 u_long imu_timestamp;
@@ -35,6 +37,12 @@ void setup() {
     } else {
       Serial.println("Failed to find MPU6050 sensor");
     }
+
+    if(motor_1.init()) {
+      Serial.println("Motor 1 initialized!");
+    } else {
+      Serial.println("Failed to initialize Motor 1");
+    }
   current_time = millis();
 }
 
@@ -44,7 +52,12 @@ void loop() {
   if (millis() - current_time > DELAY) {
     current_time = millis();
 
-    if (tofEH.measure()) {
+    //Serial.print("rhCount: ");
+    //Serial.println(motor_1.getRhCount());
+    Serial.print("RH Turns: ");
+    Serial.println(motor_1.getRHturns());
+
+    /*if (tofEH.measure()) {
       tof_distance = tofEH.getRangeMilliMeter();
       Serial.print("Distance: ");
       Serial.print(tof_distance);
@@ -75,5 +88,6 @@ void loop() {
       Serial.println("Failed to get IMU data");
     }
 
+  */
   }
 }
