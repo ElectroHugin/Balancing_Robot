@@ -6,6 +6,7 @@
 #define DELAY 1000
 
 MPU6050EH mpuEH;
+VL53L0XEH tofEH;
 
 u_int16_t tof_distance;
 u_long imu_timestamp;
@@ -13,7 +14,7 @@ u_long current_time;
 
 void setup() {
   Wire.begin();
-        Wire.setClock(400000);
+  Wire.setClock(400000);
 
    Serial.begin(115200);
 
@@ -22,12 +23,17 @@ void setup() {
     }
 
     Serial.println(F("Initializing I2C devices..."));
-    ToF_Setup();
+
+    if (tofEH.init()) {
+        Serial.println("VL53L0X Found!");
+    } else {
+        Serial.println("Failed to find VL53L0X sensor");
+    }
 
     if(mpuEH.init()) {
       Serial.println("MPU6050 Found!");
     } else {
-      Serial.println("Failed to find MPU6050 chip");
+      Serial.println("Failed to find MPU6050 sensor");
     }
   current_time = millis();
 }
@@ -38,9 +44,14 @@ void loop() {
   if (millis() - current_time > DELAY) {
     current_time = millis();
 
-    tof_distance = ToF_GetRangeMilliMeter();
-    Serial.print("ToF Distance: ");
-    Serial.println(tof_distance/10.0);
+    if (tofEH.measure()) {
+      tof_distance = tofEH.getRangeMilliMeter();
+      Serial.print("Distance: ");
+      Serial.print(tof_distance);
+      Serial.println(" mm");
+    } else {
+      Serial.println("Failed to measure distance");
+    }
 
     if (mpuEH.accelgyroData()) {
       Serial.print("Yaw: ");
@@ -60,7 +71,8 @@ void loop() {
 
       Serial.print("AccelZ: ");
       Serial.println(mpuEH.getAccelZ());
-
+    } else {
+      Serial.println("Failed to get IMU data");
     }
 
   }

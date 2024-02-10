@@ -1,38 +1,52 @@
 #include "Unity.h"
-#include "MPU6050Lib.h"
+#include "MPU6050EH.h"
+#include <Arduino.h>
+#include <Wire.h>
 
-void test_MPU6050Lib()
+void setUp(void)
 {
-    // Create an instance of the MPU6050Lib
-    MPU6050 mpu;
-
-    // Initialize the MPU6050Lib
-    TEST_ASSERT_TRUE(mpu.init(MPU6050_RANGE_8_G, MPU6050_RANGE_250_DEG, MPU6050_BAND_5_HZ));
-
-    // Perform some tests
-    float accelX, accelY, accelZ, gyroX, gyroY, gyroZ, temp;
-    TEST_ASSERT_TRUE(mpu.getData(accelX, accelY, accelZ, gyroX, gyroY, gyroZ, temp));
-
-    // Test the accelerometer
-    TEST_ASSERT_FLOAT_WITHIN(10.0, 0.0, accelX);
-    TEST_ASSERT_FLOAT_WITHIN(10.0, 0.0, accelY);
-    TEST_ASSERT_FLOAT_WITHIN(10.0, 0.0, accelZ);
-
-    // Test the gyroscope
-    TEST_ASSERT_FLOAT_WITHIN(10.0, 0.0, gyroX);
-    TEST_ASSERT_FLOAT_WITHIN(10.0, 0.0, gyroY);
-    TEST_ASSERT_FLOAT_WITHIN(10.0, 0.0, gyroZ);
-
-    // Test the temperature
-    TEST_ASSERT_FLOAT_WITHIN(30.0, 30.0, temp);
+    
 }
 
-int main()
+void tearDown(void)
 {
+    // clean stuff up here
+}
+
+void test_MPU6050EH()
+{
+    // Create an instance of the MPU6050Lib
+    MPU6050EH mpuEH;
+
+    // Initialize the MPU6050Lib
+    TEST_ASSERT_TRUE(mpuEH.init());
+
+    // Perform some tests
+    TEST_ASSERT_TRUE(mpuEH.accelgyroData());
+
+    // Test the accelerometer
+    TEST_ASSERT_INT16_WITHIN(10, 0, mpuEH.getAccelX());
+    TEST_ASSERT_INT16_WITHIN(10, 0, mpuEH.getAccelY());
+    TEST_ASSERT_INT16_WITHIN(10, 0, mpuEH.getAccelZ());
+
+    // Test the gyroscope
+    TEST_ASSERT_INT16_WITHIN(5, 0, mpuEH.yaw());
+    TEST_ASSERT_INT16_WITHIN(5, 0, mpuEH.pitch());
+    TEST_ASSERT_INT16_WITHIN(5, 0, mpuEH.roll());
+}
+
+void setup()
+{
+    delay(2000);
+    
+    Wire.begin();
+    Wire.setClock(400000);
+    
     UNITY_BEGIN();
-
-    // Run the MPU6050Lib test
-    RUN_TEST(test_MPU6050Lib);
-
+    test_MPU6050EH();
     UNITY_END();
+}
+
+void loop() {
+    // loop stuff here
 }

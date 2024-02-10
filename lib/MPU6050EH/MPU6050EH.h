@@ -1,7 +1,15 @@
+/**
+ * @file MPU6050EH.h
+ * @brief This file contains the declaration of the MPU6050EH class, which is a library for interfacing with the MPU6050 sensor.
+ * 
+ * This library makes use of the I2Cdev and MPU6050 libraries, and the demonstration sketch written by Jeff Rowberg with modifications by ElectroHugin.
+ * 
+ * The MPU6050EH class provides methods for initializing the sensor, reading accelerometer and gyroscope data, and calculating yaw, pitch, and roll angles.
+ * 
+ * @author ElectroHugin
+ * @date 12/02/2024
+ */
 /* * * * * * * * * * * * * * * * * * * * * *
- *  This Library makes use of the I2Cdev and MPU6050 libraries, and the demonstration
- *  sketch written by (Jeff Rowberg <jeff@rowberg.net>) 
- *  with modifications by ElectroHugin
  *  -- -- -- -- -- -- -- -- -- -- -- -- -- --
  *  I2Cdev device library code is placed under the MIT license
  *  Copyright (c) 2012 Jeff Rowberg
@@ -52,8 +60,6 @@ public:
     int16_t getAccelZ();
 
     int16_t getTemp();
-
-    
 
 private:
     // class default I2C address is 0x68

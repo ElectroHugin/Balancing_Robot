@@ -1,12 +1,33 @@
+/**
+ * @file MPU6050EH.cpp
+ * @brief Implementation file for the MPU6050EH class.
+ * 
+ * This file contains the implementation of the MPU6050EH class, which is a library for interfacing with the MPU6050 sensor.
+ * 
+ * @author ElectroHugin
+ * @date 12/02/2024
+ */
+
 #include "MPU6050EH.h"
 
+/**
+ * @brief Default constructor for the MPU6050EH class.
+ */
 MPU6050EH::MPU6050EH() {
     //
 }
+
+/**
+ * @brief Destructor for the MPU6050EH class.
+ */
 MPU6050EH::~MPU6050EH() {
     mpu.resetFIFO();
 }
 
+/**
+ * @brief Initializes the MPU6050 sensor.
+ * @return True if initialization is successful, false otherwise.
+ */
 bool MPU6050EH::init() {
     bool initSuccess = false;
     
@@ -51,40 +72,74 @@ bool MPU6050EH::init() {
     return initSuccess;
 }
 
+/**
+ * @brief Interrupt service routine for the MPU6050 data ready interrupt.
+ */
 volatile bool mpuInterrupt = false;
 void dmpDataReady() {
     mpuInterrupt = true;
 }
 
-
+/**
+ * @brief Calculates and returns the yaw angle in degrees.
+ * @return The yaw angle in degrees.
+ */
 float MPU6050EH::yaw(){
 	return (ypr[0] * 180/M_PI);
 }
 
+/**
+ * @brief Calculates and returns the pitch angle in degrees.
+ * @return The pitch angle in degrees.
+ */
 float MPU6050EH::pitch(){
 	return (ypr[1] * 180/M_PI);
 }
 
+/**
+ * @brief Calculates and returns the roll angle in degrees.
+ * @return The roll angle in degrees.
+ */
 float MPU6050EH::roll(){
 	return (ypr[2] * 180/M_PI);
 }
 
+/**
+ * @brief Returns the X-axis acceleration value.
+ * @return The X-axis acceleration value.
+ */
 int16_t MPU6050EH::getAccelX(){
     return aaWorld.x;
 }
 
+/**
+ * @brief Returns the Y-axis acceleration value.
+ * @return The Y-axis acceleration value.
+ */
 int16_t MPU6050EH::getAccelY(){
     return aaWorld.y;
 }
 
+/**
+ * @brief Returns the Z-axis acceleration value.
+ * @return The Z-axis acceleration value.
+ */
 int16_t MPU6050EH::getAccelZ(){
     return aaWorld.z;
 }
 
+/**
+ * @brief Returns the temperature value.
+ * @return The temperature value.
+ */
 int16_t MPU6050EH::getTemp(){
     return mpu.getTemperature();
 }
 
+/**
+ * @brief Reads the accelerometer and gyroscope data from the MPU6050 sensor.
+ * @return True if data reading is successful, false otherwise.
+ */
 bool MPU6050EH::accelgyroData(){
     bool dataSuccess = false;
 

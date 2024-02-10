@@ -1,41 +1,82 @@
+/**
+ * @file ToFLib.cpp
+ * @brief Implementation file for the ToFLib library.
+ * 
+ * @author ElectroHugin
+ * @date 12/02/2024
+ */
+
 #include "ToFLib.h"
 
-Adafruit_VL53L0X tof_sensor = Adafruit_VL53L0X();
-VL53L0X_RangingMeasurementData_t measurement;
+/**
+ * @brief Default constructor for the VL53L0XEH class.
+ */
+VL53L0XEH::VL53L0XEH() {
+    //
+}
 
 /**
- * @brief Set up the Time-of-Flight (ToF) sensor.
- * 
- * This function initializes the ToF sensor and checks if it successfully boots.
- * If the sensor fails to boot, the function prints an error message and enters an infinite loop.
+ * @brief Destructor for the VL53L0XEH class.
  */
-void ToF_Setup() {
-    //Serial.println("VL53L0X sensor test");
+VL53L0XEH::~VL53L0XEH() {
+    //
+}
+
+/**
+ * @brief Initializes the VL53L0X sensor.
+ * @return True if initialization is successful, false otherwise.
+ */
+bool VL53L0XEH::init() {
+    bool initSuccess = false;
+
     if (!tof_sensor.begin()) {
-        Serial.println(F("Failed to boot VL53L0X"));
-        while (1);
+        initSuccess = false;
+    } else {
+        initSuccess = true;
     }
+
+    return initSuccess;
 }
 
 /**
- * @brief Get the range in millimeters from the Time-of-Flight (ToF) sensor.
- * 
- * This function reads a measurement from the ToF sensor and returns the range in millimeters.
- * If the measurement is successful, the range value is returned. If there is a phase failure,
- * the function returns -1 to indicate an out-of-range measurement.
- * 
- * @return uint16_t The range in millimeters, or -1 if the measurement is out of range.
+ * @brief Performs a measurement using the VL53L0X sensor.
+ * @return True if measurement is successful, false otherwise.
  */
-uint16_t ToF_GetRangeMilliMeter() {
-    //Serial.print("Reading a measurement... ");
-    tof_sensor.rangingTest(&measurement, false); // pass in 'true' to get debug data printout!
-
-    if (measurement.RangeStatus != 4) {  // phase failures have incorrect data
-        //Serial.print("Distance (mm): "); 
-        //Serial.println(measure.RangeMilliMeter);
-        return measurement.RangeMilliMeter;
+bool VL53L0XEH::measure() {
+    bool measureSuccess = false;
+    tof_sensor.rangingTest(&measurement, false);
+    if (measurement.RangeStatus != 4) {
+        measureSuccess = true;
     } else {
-        return -1;
-        //Serial.println(" out of range ");
+        measureSuccess = false;
     }
+    return measureSuccess;
 }
+
+/**
+ * @brief Gets the range measured by the VL53L0X sensor in millimeters.
+ * @return The range in millimeters.
+ */
+uint16_t VL53L0XEH::getRangeMilliMeter() {
+    return measurement.RangeMilliMeter;
+}
+
+/**
+ * @brief Gets the range measured by the VL53L0X sensor in centimeters.
+ * @return The range in centimeters.
+ */
+float VL53L0XEH::getRangeCentiMeter() {
+    u_int16_t range = measurement.RangeMilliMeter;
+    return (float)range / 10.0;
+}
+
+/**
+ * @brief Gets the range measured by the VL53L0X sensor in meters.
+ * @return The range in meters.
+ */
+float VL53L0XEH::getRangeMeter() {
+    u_int16_t range = measurement.RangeMilliMeter;
+    return (float)range / 1000.0;
+}
+
+
