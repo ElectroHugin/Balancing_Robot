@@ -1,7 +1,7 @@
 /* * * * * * * * * * * * * * * * * * * * * *
  *  This Library makes use of the I2Cdev and MPU6050 libraries, and the demonstration
- *  sketch written by (Jeff Rowberg <jeff@rowberg.net>) and modifications by
- *  Simon Bluett <hello@chillibasket.com> (Website: wired.chillibasket.com)
+ *  sketch written by (Jeff Rowberg <jeff@rowberg.net>) 
+ *  with modifications by ElectroHugin
  *  -- -- -- -- -- -- -- -- -- -- -- -- -- --
  *  I2Cdev device library code is placed under the MIT license
  *  Copyright (c) 2012 Jeff Rowberg
@@ -18,10 +18,15 @@
 #ifndef MPU6050EH_H
 #define MPU6050EH_H
 
-#include <I2Cdev.h>
-//#include <MPU6050.h>
-#include <MPU6050_6Axis_MotionApps20.h>
-#include <Wire.h>
+#include "I2Cdev.h"
+#include "MPU6050_6Axis_MotionApps20.h"
+#include "Wire.h"
+
+#define INTERRUPT_PIN 2
+#define LED_PIN 13 
+
+
+void dmpDataReady();
 
 class MPU6050EH {
 public:
@@ -48,22 +53,35 @@ public:
 
     int16_t getTemp();
 
-    Quaternion q;                   // [w, x, y, z]       Quaternion Container
-    VectorFloat gravity;           	// [x, y, z]            Gravity Vector
-    int16_t gyro[3];               	// [x, y, z]            Gyro Vector
-    float ypr[3];                   // [yaw, pitch, roll]   Yaw/Pitch/Roll & gravity vector
-    float averagepitch[50];        	// Used for averaging pitch value
+    
 
 private:
-    // Specific I2C addresses may be passed as a parameter here
+    // class default I2C address is 0x68
+    // specific I2C addresses may be passed as a parameter here
+    // AD0 low = 0x68 (default for SparkFun breakout and InvenSense evaluation board)
+    // AD0 high = 0x69
     MPU6050 mpu;        			// Default: AD0 low = 0x68
 
-    bool dmpReady = false;         	// Set true if DMP init was successful
-    uint8_t devStatus;              // Return status after device operation (0 = success, !0 = error)
-    uint8_t mpuIntStatus;           // Holds actual interrupt status byte from MPU
-    uint16_t packetSize;            // Expected DMP packet size (default is 42 bytes)
-    uint16_t fifoCount;             // Count of all bytes currently in FIFO
-    uint8_t fifoBuffer[64];         // FIFO storage buffer
+    bool blinkState = false;
+
+    // MPU control/status vars
+    bool dmpReady = false;  // set true if DMP init was successful
+    uint8_t mpuIntStatus;   // holds actual interrupt status byte from MPU
+    uint8_t devStatus;      // return status after each device operation (0 = success, !0 = error)
+    uint16_t packetSize;    // expected DMP packet size (default is 42 bytes)
+    uint16_t fifoCount;     // count of all bytes currently in FIFO
+    uint8_t fifoBuffer[64]; // FIFO storage buffer
+
+    // orientation/motion vars
+    Quaternion q;           // [w, x, y, z]         quaternion container
+    VectorInt16 aa;         // [x, y, z]            accel sensor measurements
+    VectorInt16 aaReal;     // [x, y, z]            gravity-free accel sensor measurements
+    VectorInt16 aaWorld;    // [x, y, z]            world-frame accel sensor measurements
+    VectorFloat gravity;    // [x, y, z]            gravity vector
+    float euler[3];         // [psi, theta, phi]    Euler angle container
+    float ypr[3];           // [yaw, pitch, roll]   yaw/pitch/roll container and gravity vector
+
+    
 };
 
 

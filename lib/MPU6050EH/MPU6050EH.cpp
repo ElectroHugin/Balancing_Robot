@@ -9,37 +9,52 @@ MPU6050EH::~MPU6050EH() {
 
 bool MPU6050EH::init() {
     bool initSuccess = false;
+    
     mpu.initialize();
-    if (mpu.testConnection()) {
-        initSuccess = true;
-    } else {
-        initSuccess = false;
-    }
+    mpu.testConnection() ? initSuccess = true : initSuccess = false;
 
     devStatus = mpu.dmpInitialize();
 
-    mpu.setXGyroOffset(-2168);
-    mpu.setYGyroOffset(-142);
-    mpu.setZGyroOffset(754);
-    mpu.setXAccelOffset(161);
-    mpu.setYAccelOffset(-82);
-    mpu.setZAccelOffset(20);
+    mpu.setXAccelOffset(-2168);
+    mpu.setYAccelOffset(-142);
+    mpu.setZAccelOffset(754);
 
-    // Make sure it worked (returns 0 if so)
+    mpu.setXGyroOffset(161);
+    mpu.setYGyroOffset(-82);
+    mpu.setZGyroOffset(20);
+    
     if (devStatus == 0) {
+        initSuccess = true;
+        // Calibration Time: generate offsets and calibrate our MPU6050
+        mpu.CalibrateAccel(6);
+        mpu.CalibrateGyro(6);
+        //mpu.PrintActiveOffsets();
+        // turn on the DMP, now that it's ready
         mpu.setDMPEnabled(true);
+
+        // enable interrupt detection
+        attachInterrupt(digitalPinToInterrupt(INTERRUPT_PIN), dmpDataReady, RISING);
         mpuIntStatus = mpu.getIntStatus();
 
+        // set our DMP Ready flag so the main loop() function knows it's okay to use it
         dmpReady = true;
+
+        // get expected DMP packet size for later comparison
         packetSize = mpu.dmpGetFIFOPacketSize();
-        initSuccess = true;
     } else {
-		// In case of an error with the DMP
         initSuccess = false;
     }
+
+    // configure LED for output
+    pinMode(LED_PIN, OUTPUT);
+
     return initSuccess;
 }
 
+volatile bool mpuInterrupt = false;
+void dmpDataReady() {
+    mpuInterrupt = true;
+}
 
 
 float MPU6050EH::yaw(){
@@ -54,20 +69,16 @@ float MPU6050EH::roll(){
 	return (ypr[2] * 180/M_PI);
 }
 
-float MPU6050EH::angRate(){
-	return -((float)gyro[1]/131.0);
-}
-
 int16_t MPU6050EH::getAccelX(){
-    return mpu.getAccelerationX();
+    return aaWorld.x;
 }
 
 int16_t MPU6050EH::getAccelY(){
-    return mpu.getAccelerationY();
+    return aaWorld.y;
 }
 
 int16_t MPU6050EH::getAccelZ(){
-    return mpu.getAccelerationZ();
+    return aaWorld.z;
 }
 
 int16_t MPU6050EH::getTemp(){
@@ -75,45 +86,26 @@ int16_t MPU6050EH::getTemp(){
 }
 
 bool MPU6050EH::accelgyroData(){
-    bool dataSuccess = true;
-    // Reset interrupt flag and get INT_STATUS byte
-    mpuIntStatus = mpu.getIntStatus();
+    bool dataSuccess = false;
 
-    // Get current FIFO count
-    fifoCount = mpu.getFIFOCount();
+    // if programming failed, don't try to do anything
+    if (!dmpReady) return dataSuccess;
+    // read a packet from FIFO
+    if (mpu.dmpGetCurrentFIFOPacket(fifoBuffer)) { // Get the Latest packet 
 
-    // Check for overflow (this should never happen unless our code is too inefficient)
-    if ((mpuIntStatus & 0x10) || fifoCount == 1024) {
-        // Reset so we can continue cleanly
-        mpu.resetFIFO();
-        //Serial.println("Warning - FIFO Overflowing!");
-        dataSuccess = false;
-
-    // otherwise, check for DMP data ready interrupt (this should happen exactly once per loop: 100Hz)
-    // mpuIntStatus & 0x02
-    } else if (true) {
-        // Wait for correct available data length, should be less than 1-2ms, if any!
-        while (fifoCount < packetSize) fifoCount = mpu.getFIFOCount();
-
-
-        // read a packet from FIFO
-        mpu.getFIFOBytes(fifoBuffer, packetSize);
-        
-        // track FIFO count here in case there is > 1 packet available
-        // (this lets us immediately read more without waiting for an interrupt)
-        fifoCount -= packetSize;
-
-        // Get sensor data
         mpu.dmpGetQuaternion(&q, fifoBuffer);
-        mpu.dmpGetGyro(gyro, fifoBuffer);
         mpu.dmpGetGravity(&gravity, &q);
         mpu.dmpGetYawPitchRoll(ypr, &q, &gravity);
-        mpu.resetFIFO();
+        mpu.dmpGetAccel(&aa, fifoBuffer);
+        mpu.dmpGetLinearAccel(&aaReal, &aa, &gravity);
+        mpu.dmpGetLinearAccelInWorld(&aaWorld, &aaReal, &q);
 
-        //Serial.print(ypr[1]);
-        //Serial.print(" - ");
-        //Serial.println(ypr[0]);
+        dataSuccess = true;
     }
+
+    blinkState = !blinkState;
+    digitalWrite(LED_PIN, blinkState);
+
     return dataSuccess;
 }
 
