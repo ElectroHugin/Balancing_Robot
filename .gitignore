@@ -1,15 +1,15 @@
-.pio
-.vscode/.browse.c_cpp.db*
-.vscode/c_cpp_properties.json
-.vscode/launch.json
-.vscode/ipch
-.vscode/*
+Software/.pio
+Software/.vscode/.browse.c_cpp.db*
+Software/.vscode/c_cpp_properties.json
+Software/.vscode/launch.json
+Software/.vscode/ipch
+Software/.vscode/*
 
-.pioenvs
-.piolibdeps
-.clang_complete
-.gcc-flags.json
-.pio
+Software/.pioenvs
+Software/.piolibdeps
+Software/.clang_complete
+Software/.gcc-flags.json
+Software/.pio
 
 # Prerequisites
 *.d
