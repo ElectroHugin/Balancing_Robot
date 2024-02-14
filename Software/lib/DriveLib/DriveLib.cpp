@@ -2,6 +2,7 @@
 
 
 volatile long rhCount = 0;
+volatile long lhCount = 0;
 
 /**
  * @brief Default constructor for the DriveLib class.
@@ -31,6 +32,7 @@ bool JGA25_371::init() {
     pinMode(RH_ENCODER_A, INPUT);
     pinMode(RH_ENCODER_B, INPUT);
     attachInterrupt(digitalPinToInterrupt(RH_ENCODER_A), rhEncoderEvent, CHANGE);
+    attachInterrupt(digitalPinToInterrupt(RH_ENCODER_B), lhEncoderEvent, CHANGE);
     initSuccess = true;
     return initSuccess;
 }
@@ -41,6 +43,14 @@ long JGA25_371::getRhCount() {
 
 long JGA25_371::getRHturns() {
     return rhCount / pulse_per_revolution;
+}
+
+long JGA25_371::getLhCount() {
+    return lhCount;
+}
+
+long JGA25_371::getLHturns() {
+    return lhCount / pulse_per_revolution;
 }
 
 void IRAM_ATTR rhEncoderEvent() {
@@ -62,18 +72,21 @@ void IRAM_ATTR rhEncoderEvent() {
     }
 }
 
-/*void IRAM_ATTR rhEncoderEvent() {
-    if (digitalRead(RH_ENCODER_A) == HIGH) {
-    if (digitalRead(RH_ENCODER_B) == LOW) {
-      rhCount++;
-    } else {
-      rhCount--;
+void IRAM_ATTR lhEncoderEvent() {
+    if (digitalRead(LH_ENCODER_A) == HIGH) {
+      if (digitalRead(LH_ENCODER_B) == LOW) {
+        lhCount++;
+      }
+      else if (digitalRead(LH_ENCODER_B) == HIGH) {
+        //lhCount--;
+      }
     }
-  } else {
-    if (digitalRead(RH_ENCODER_B) == LOW) {
-      rhCount--;
-    } else {
-      rhCount++;
+    else if (digitalRead(LH_ENCODER_A) == LOW) {
+      if (digitalRead(LH_ENCODER_B) == LOW) {
+        lhCount--;
+      }
+      else if (digitalRead(LH_ENCODER_B) == HIGH) {
+        //rhCount++;
+      }
     }
-  }
-}*/
+}
