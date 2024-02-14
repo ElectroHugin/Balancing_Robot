@@ -43,7 +43,26 @@ long JGA25_371::getRHturns() {
     return rhCount / pulse_per_revolution;
 }
 
-void rhEncoderEvent() {
+void IRAM_ATTR rhEncoderEvent() {
+    if (digitalRead(RH_ENCODER_A) == HIGH) {
+      if (digitalRead(RH_ENCODER_B) == LOW) {
+        rhCount++;
+      }
+      else if (digitalRead(RH_ENCODER_B) == HIGH) {
+        //rhCount--;
+      }
+    }
+    else if (digitalRead(RH_ENCODER_A) == LOW) {
+      if (digitalRead(RH_ENCODER_B) == LOW) {
+        rhCount--;
+      }
+      else if (digitalRead(RH_ENCODER_B) == HIGH) {
+        //rhCount++;
+      }
+    }
+}
+
+/*void IRAM_ATTR rhEncoderEvent() {
     if (digitalRead(RH_ENCODER_A) == HIGH) {
     if (digitalRead(RH_ENCODER_B) == LOW) {
       rhCount++;
@@ -57,4 +76,4 @@ void rhEncoderEvent() {
       rhCount++;
     }
   }
-}
+}*/

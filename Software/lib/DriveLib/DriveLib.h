@@ -12,7 +12,7 @@
 //#define LH_ENCODER_A 2
 //#define LH_ENCODER_B 4
 
-void rhEncoderEvent();
+void IRAM_ATTR rhEncoderEvent();
 
 class JGA25_371 {
 public:
@@ -23,7 +23,7 @@ public:
     long getRHturns();
 
 private:
-    u_int16_t pulse_per_revolution = 194; // 11 pulses * 4.4 gear ratio * 4 counts per pulse
+    u_int16_t pulse_per_revolution = 106; // 12 pulses * 4.4 gear ratio * 2 counts per pulse
 
 };
 
