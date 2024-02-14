@@ -28,6 +28,19 @@ Self balancing robot with two wheels. Scope of functionality depends on sensors 
 - JGA25-371 DC-Motor 12V with Hall-Encoder 65mm wheels
 
 ## Visuals
+### 3D Model
+
+![Visual representation of 3D Model](Hardware/Technical_Drawings/3D_Model.png?raw=true "3D-Render of Model")
+
+### PCB Models
+![Motherboard](Hardware/PCB_Visuals/balancing_robot_motherboard.png?raw=true "PCB of Motherboard")
+
+![MPU6050](Hardware/PCB_Visuals/MPU6050_I2c.png?raw=true "PCB of MPU6050-Board")
+
+![Motherboard](Hardware/PCB_Visuals/TB6612_MotorBridge.png?raw=true "PCB of TB6612FNG-Board")
+
+![Motherboard](Hardware/PCB_Visuals/VL53L0X_I2c.png?raw=true "PCB of VL53L0X-Board")
+
 
 ## Installation
 WIP
